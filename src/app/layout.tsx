@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Roboto_Slab, Public_Sans } from "next/font/google";
-import { ThemeProvider } from "next-themes";
+import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/custome/navbar";
