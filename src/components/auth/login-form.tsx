@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useActionState } from "react";
 import { loginAction } from "@/actions/auth";
-import { GoogleSignInButton } from "./custome/google-signin-button";
+import { GoogleSignInButton } from "@/components/custome/google-signin-button";
 
 export function LoginForm({
   className,

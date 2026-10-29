@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { buttonVariants } from "./ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
-import { LogoutButton } from "./logout-button";
+import { LogoutButton } from "@/components/auth/logout-button";
 import { getCurrentUser } from "@/lib/get-current-user";
 
 import { UserAvatar } from "@/components/custome/user-avatar";
