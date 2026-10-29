@@ -19,6 +19,7 @@ import Link from "next/link";
 // feedback card props
 export type FeedbackCardProps = {
   feedbackData: FeedbackType;
+  isVoted?: boolean;
   variant?: "default" | "compact";
 };
 
@@ -52,16 +53,9 @@ export const getCategoryStyles = (category: string) => {
 
 export async function FeedbackCard({
   feedbackData,
+  isVoted = false,
   variant = "default",
 }: FeedbackCardProps) {
-  const supabase = await createClient();
-  const { data: authData } = await supabase.auth.getUser();
-
-  // current user is check in session and call to hasUserVoted
-  const isVoted = authData.user
-    ? await hasUserVoted(feedbackData.id, authData.user.id)
-    : false;
-
   const styles = getCategoryStyles(feedbackData.category);
 
   const isCompact = variant === "compact";
@@ -127,7 +121,13 @@ export async function FeedbackCard({
           </CardContent>
         )}
       </Link>
-      <CardFooter className={isCompact ? "p-3.5 pt-0 sm:p-4 sm:pt-0" : "px-4 sm:px-6 pb-4 sm:pb-5 pt-0"}>
+      <CardFooter
+        className={
+          isCompact
+            ? "p-3.5 pt-0 sm:p-4 sm:pt-0"
+            : "px-4 sm:px-6 pb-4 sm:pb-5 pt-0"
+        }
+      >
         <div
           className={`flex items-center w-full ${isCompact ? "justify-between" : "gap-3 sm:gap-4"}`}
         >
@@ -145,7 +145,10 @@ export async function FeedbackCard({
               </div>
             )}
             <div className="flex items-center gap-1 sm:gap-1.5">
-              <MessageSquare className="w-3.5 h-3.5 sm:w-4 sm:h-4" suppressHydrationWarning />
+              <MessageSquare
+                className="w-3.5 h-3.5 sm:w-4 sm:h-4"
+                suppressHydrationWarning
+              />
               <span>
                 {feedbackData.comment_count ??
                   (feedbackData.comment as [{ count: number }])?.[0]?.count ??
