@@ -1,8 +1,5 @@
-// zod validations
-
 import { z } from "zod";
 
-// enums
 export const categoryEnum = z.enum(["FEATURE", "BUG", "UI"]);
 export const statusEnum = z.enum([
   "UNDER_REVIEW",
@@ -10,41 +7,36 @@ export const statusEnum = z.enum([
   "IN_PROGRESS",
   "COMPLETED",
 ]);
-
 export type statusEnumType = z.infer<typeof statusEnum>;
 
-// comments input
-export const CreateCommentSchema = z.object({
-  content: z.string().min(3, "Comment must be at least 3 characters long"),
-});
-
-export type CommentType = z.infer<typeof CreateCommentSchema> & {
-  id: string;
-  user_id: string;
-  feedback_id: string;
-  is_deleted: boolean;
-  deleted_by_admin: boolean;
-  deleted_at: Date | null;
-  created_at: Date;
-  profile: {
-    full_name: string;
-    avatar_url: string;
-  };
-};
-
-// votes
-export type VotesType = {
-  id: string;
-  feedback_id: string;
-  user_id: string;
-};
-
-// feedback input
+// input schemas (used by server actions)
 export const CreateFeedbackSchema = z.object({
-  title: z.string().min(5, "Title is required"),
-  description: z.string().min(5, "Description is required"),
+  title: z
+    .string()
+    .trim()
+    .min(5, "Title must be at least 5 characters")
+    .max(100),
+  description: z
+    .string()
+    .trim()
+    .min(5, "Description must be at least 5 characters")
+    .max(1000),
   category: categoryEnum,
 });
+
+export const CreateCommentSchema = z.object({
+  content: z
+    .string()
+    .trim()
+    .min(5, "Comment is too short")
+    .max(1000, "Comment is too long"),
+});
+
+// row shapes (what we read back from the database)
+type ProfileInfo = {
+  full_name: string | null;
+  avatar_url: string | null;
+} | null;
 
 export type FeedbackType = z.infer<typeof CreateFeedbackSchema> & {
   id: string;
@@ -53,30 +45,19 @@ export type FeedbackType = z.infer<typeof CreateFeedbackSchema> & {
   status: statusEnumType;
   is_deleted: boolean;
   deleted_by_admin: boolean;
-  deleted_at: Date | null;
-  profile: {
-    full_name: string;
-    avatar_url: string;
-  };
-  // view columns (flat aggregates from vw_feedback_details)
-  vote_count?: number;
-  upvote_count?: number;
-  comment_count?: number;
-  // legacy relational shapes (kept for compatibility)
-  comment?: CommentType[] | [{ count: number }];
-  votes?: [{ count: number }];
+  deleted_at: string | null;
+  vote_count: number; // from vw_feedback_details
+  comment_count: number; // from vw_feedback_details
+  profile: ProfileInfo;
 };
 
-// trending sidebar — matches the specific select() fields from vw_feedback_details
-export type TrendingFeedbackType = {
+export type CommentType = z.infer<typeof CreateCommentSchema> & {
   id: string;
-  title: string;
-  vote_count?: number;
-  upvote_count?: number;
+  user_id: string;
+  feedback_id: string;
+  created_at: string;
   is_deleted: boolean;
-  deleted_at: Date | null;
-  profile: {
-    full_name: string;
-    avatar_url: string | null;
-  } | null;
+  deleted_by_admin: boolean;
+  deleted_at: string | null;
+  profile: ProfileInfo;
 };

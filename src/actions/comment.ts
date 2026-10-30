@@ -1,127 +1,56 @@
-// server actions for comments
 "use server";
 
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { getCurrentUser } from "@/lib/get-current-user";
 import { createClient } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/get-current-user";
+import type { ActionState } from "@/actions/feedback";
+import { CreateCommentSchema } from "@/lib/validations";
 
-// input schema type
-const CommentSchema = z.object({
-  content: z.string().min(5, "Comment is too short"),
-});
-
-// What this action returns to the form
-type ActionState = {
-  success: boolean;
-  message?: string;
-  errors?: {
-    content?: string[];
-  };
-};
-
-// create new comment
-export const createCommentAction = async (
+export async function createCommentAction(
   prevState: ActionState,
   formData: FormData,
-): Promise<ActionState> => {
-  const { userData, errorMessage } = await getCurrentUser();
-
-  if (!userData || errorMessage) {
-    return {
-      success: false,
-      message: errorMessage || "User not authenticated",
-    };
+): Promise<ActionState> {
+  const { userData } = await getCurrentUser();
+  if (!userData) return { success: false, message: "Please log in first." };
+  const parsed = CreateCommentSchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) {
+    return { success: false, errors: z.flattenError(parsed.error).fieldErrors };
   }
 
-  // raw data
-  const rawData = Object.fromEntries(formData.entries());
-  // validate
-  const validatedData = CommentSchema.safeParse(rawData);
-
-  // check
-  if (!validatedData.success) {
-    return {
-      success: false,
-      errors: z.flattenError(validatedData.error).fieldErrors,
-    };
-  }
-
-  // validated data
-  const { content } = validatedData.data;
-  const feedbackId = String(formData.get("feedback_id"));
-
-  // insatnce
   const supabase = await createClient();
-
-  // insert
   const { error } = await supabase.from("comment").insert({
-    content,
-    user_id: userData.id,
-    feedback_id: feedbackId,
+    content: parsed.data.content,
+    user_id: userData.id, // checked by RLS
+    feedback_id: String(formData.get("feedback_id")),
   });
 
-  // check error
-  if (error) {
-    return {
-      success: false,
-      message: error.message,
-    };
-  }
+  if (error) return { success: false, message: error.message };
 
-  // revalidate
-  revalidatePath(`/feedback/${feedbackId}`);
+  revalidatePath("/", "layout"); // comment count also shows on the feed
+  return { success: true };
+}
 
-  return {
-    success: true,
-    message: "Comment created successfully!",
-  };
-};
-
-// soft delete comment
-export const deleteCommentAction = async (
+// soft delete: the row stays, it is only marked as deleted
+export async function deleteCommentAction(
   prevState: ActionState,
   formData: FormData,
-): Promise<ActionState> => {
-  // check user
-
-  const { isAdmin, userData, errorMessage } = await getCurrentUser();
-
-  if (!userData || errorMessage) {
-    return {
-      success: false,
-      message: errorMessage || "User not authenticated",
-    };
-  }
-
-  const commentId = String(formData.get("comment_id"));
-  const feedbackId = String(formData.get("feedback_id"));
+): Promise<ActionState> {
+  const { isAdmin, userData } = await getCurrentUser();
+  if (!userData) return { success: false, message: "Please log in first." };
 
   const supabase = await createClient();
-
-  // delete (soft delete)
   const { error } = await supabase
     .from("comment")
     .update({
       is_deleted: true,
       deleted_by_admin: isAdmin,
-      deleted_at: new Date(),
+      deleted_at: new Date().toISOString(),
     })
-    .eq("id", commentId);
+    .eq("id", String(formData.get("comment_id")));
 
-  // check error
-  if (error) {
-    return {
-      success: false,
-      message: error.message,
-    };
-  }
+  if (error) return { success: false, message: error.message };
 
-  // revalidate
-  revalidatePath(`/feedback/${feedbackId}`);
-
-  return {
-    success: true,
-    message: "Comment deleted successfully!",
-  };
-};
+  revalidatePath("/", "layout");
+  return { success: true };
+}

@@ -1,35 +1,23 @@
 "use client";
-// status update card
 
+import { useActionState } from "react";
 import { updateStatusAdminAction } from "@/actions/admin";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { statusEnumType } from "@/lib/validations";
-import { useActionState, useRef, useState } from "react";
+import type { statusEnumType } from "@/lib/validations";
 
-const items = [
-  { label: "UNDER_REVIEW", value: "UNDER_REVIEW" },
-  { label: "PLANNED", value: "PLANNED" },
-  { label: "IN_PROGRESS", value: "IN_PROGRESS" },
-  { label: "COMPLETED", value: "COMPLETED" },
+const STATUSES = [
+  { value: "UNDER_REVIEW", label: "Under Review" },
+  { value: "PLANNED", label: "Planned" },
+  { value: "IN_PROGRESS", label: "In Progress" },
+  { value: "COMPLETED", label: "Completed" },
 ];
 
-const StatusUpdateButton = ({
+export default function StatusUpdateButton({
   feedback_id,
   currentState,
 }: {
   feedback_id: string;
   currentState: statusEnumType;
-}) => {
-  const formRef = useRef<HTMLFormElement>(null);
-  const [status, setStatus] = useState(currentState as statusEnumType);
-
+}) {
   const [state, formAction, isPending] = useActionState(
     updateStatusAdminAction,
     {
@@ -38,38 +26,27 @@ const StatusUpdateButton = ({
   );
 
   return (
-    <>
-      <form action={formAction} ref={formRef}>
-        <input type="hidden" name="feedback_id" value={feedback_id} />
-        <Select
-          disabled={isPending}
-          name="status"
-          value={status}
-          onValueChange={(newStatus) => {
-            if (newStatus) {
-              setStatus(newStatus as statusEnumType);
-              setTimeout(() => {
-                formRef.current?.requestSubmit();
-              }, 0);
-            }
-          }}
-        >
-          <SelectTrigger className="w-full sm:w-44 bg-background shadow-sm text-xs sm:text-sm">
-            <SelectValue placeholder="Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              {items.map((item) => (
-                <SelectItem key={item.value} value={item.value}>
-                  {item.label}
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </form>
-    </>
+    <form action={formAction} className="w-full sm:w-52">
+      <input type="hidden" name="feedback_id" value={feedback_id} />
+      <select
+        name="status"
+        defaultValue={currentState}
+        disabled={isPending}
+        onChange={(e) => e.currentTarget.form?.requestSubmit()}
+        className="h-10 w-full rounded-lg border bg-background px-3 text-sm font-medium shadow-sm"
+      >
+        {STATUSES.map((s) => (
+          <option key={s.value} value={s.value}>
+            {s.label}
+          </option>
+        ))}
+      </select>
+      {isPending && (
+        <p className="mt-1 text-xs text-muted-foreground">Saving...</p>
+      )}
+      {state.message && !state.success && (
+        <p className="mt-1 text-xs text-destructive">{state.message}</p>
+      )}
+    </form>
   );
-};
-
-export default StatusUpdateButton;
+}

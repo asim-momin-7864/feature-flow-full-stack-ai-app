@@ -1,73 +1,35 @@
-// profile making function
+import type { User } from "@supabase/supabase-js";
 import { createClient } from "./supabase/server";
 
-type EnsureProfileResult = {
-  profile: any | null;
-  error: null | string;
-};
+const DEFAULT_AVATAR =
+  "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png";
 
-const ensureProfile = async (): Promise<EnsureProfileResult> => {
-  // instance
+// returns the user's profile row, and creates it the first time
+const ensureProfile = async (user: User) => {
   const supabase = await createClient();
 
-  const { data: currentUser, error: userError } = await supabase.auth.getUser();
-
-  if (userError || !currentUser.user) {
-    return {
-      profile: null,
-      error: "No user is logged-in",
-    };
-  }
-
-  // user object
-  const user = currentUser.user;
-
-  // chck user has profile row
-  const { data: existingProfile, error: fetchError } = await supabase
+  const { data: existing, error: fetchError } = await supabase
     .from("profile")
     .select("*")
     .eq("id", user.id)
     .maybeSingle();
 
-  if (fetchError) {
-    return {
-      profile: null,
-      error: fetchError.message,
-    };
-  }
+  if (fetchError) return { profile: null, error: fetchError.message };
+  if (existing) return { profile: existing, error: null };
 
-  // profile exists
-  if (existingProfile) {
-    return {
-      profile: existingProfile,
-      error: null,
-    };
-  }
-
-  // create user
-  const { data: newProfile, error: createError } = await supabase
+  const { data: created, error: createError } = await supabase
     .from("profile")
     .insert({
       id: user.id,
       full_name:
-        user?.user_metadata.full_name || user?.user_metadata.name || "No name",
-      avatar_url:
-        user?.user_metadata.avatar_url ||
-        "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original",
-    });
+        user.user_metadata.full_name || user.user_metadata.name || "No name",
+      avatar_url: user.user_metadata.avatar_url || DEFAULT_AVATAR,
+    })
+    .select() // without this, insert returns no row
+    .single();
 
-  // check
-  if (createError) {
-    return {
-      profile: null,
-      error: createError.message,
-    };
-  }
-
-  return {
-    profile: newProfile,
-    error: null,
-  };
+  if (createError) return { profile: null, error: createError.message };
+  return { profile: created, error: null };
 };
 
 export default ensureProfile;

@@ -2,16 +2,13 @@
 
 import { useActionState } from "react";
 import { deleteFeedbackAction } from "@/actions/feedback";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 
-const DeleteButton = ({ id }: { id: string }) => {
-  // server action
-  const [state, formAction, isPending] = useActionState(deleteFeedbackAction, {
+export default function DeleteButton({ id }: { id: string }) {
+  const [, formAction, isPending] = useActionState(deleteFeedbackAction, {
     success: false,
-    message: "",
   });
 
-  // render
   return (
     <form action={formAction}>
       <input type="hidden" name="id" value={id} />
@@ -25,6 +22,4 @@ const DeleteButton = ({ id }: { id: string }) => {
       </Button>
     </form>
   );
-};
-
-export default DeleteButton;
+}

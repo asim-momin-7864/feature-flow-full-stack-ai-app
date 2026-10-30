@@ -1,192 +1,94 @@
-// feedback acctions
-
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
-import { CreateFeedbackSchema } from "@/lib/validations";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import ensureProfile from "@/lib/ensure-profile";
+import { createClient } from "@/lib/supabase/server";
+import { CreateFeedbackSchema } from "@/lib/validations";
 import { getCurrentUser } from "@/lib/get-current-user";
 
-// Action State - what all server actions return to form
+// what every action returns to its form
 export type ActionState = {
   success: boolean;
-  errors?: {
-    // this errors is only for form field errors
-    title?: string[];
-    category?: string[];
-    description?: string[];
-  };
-  message?: string; // it gets success or error both messages
+  errors?: Record<string, string[] | undefined>;
+  message?: string;
 };
 
-// create
 export async function createFeedbackAction(
   prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  // check user is authenticated
-  const { userData, errorMessage } = await getCurrentUser();
+  const { userData } = await getCurrentUser();
+  if (!userData) return { success: false, message: "Please log in first." };
 
-  if (!userData || errorMessage) {
-    return {
-      success: false,
-      message: errorMessage || "User not authenticated",
-    };
-  }
-
-  // parse and validation
-  const rawData = Object.fromEntries(formData.entries());
-  const validatedData = CreateFeedbackSchema.safeParse(rawData);
-
-  // check
-  if (!validatedData.success) {
-    return {
-      success: false,
-      errors: z.flattenError(validatedData.error).fieldErrors,
-    };
+  const parsed = CreateFeedbackSchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) {
+    return { success: false, errors: z.flattenError(parsed.error).fieldErrors };
   }
 
   const supabase = await createClient();
+  const { error } = await supabase
+    .from("feedback")
+    .insert({ ...parsed.data, user_id: userData.id }); // user_id is checked by RLS
 
-  // insert
-  const { error } = await supabase.from("feedback").insert({
-    ...validatedData.data,
-    user_id: userData.id, // needed for RLS
-  });
+  if (error) return { success: false, message: error.message };
 
-  // check
-  if (error) {
-    console.error("Error creating feedback:", error.message);
-    return {
-      success: false,
-      message: error.message,
-    };
-  }
+  // (AI embedding + tags will be added here later, inside try/catch)
 
-  // revalidate
-  revalidatePath("/");
-
-  return {
-    success: true,
-    message: "Feedback created successfully!",
-  };
+  revalidatePath("/", "layout");
+  redirect("/");
 }
 
-// soft delete feedback action
+// soft delete: the row stays, it is only marked as deleted
 export async function deleteFeedbackAction(
   prevState: ActionState,
   formData: FormData,
-) {
-  // check user is authenticated
-  const { isAdmin, userData, errorMessage } = await getCurrentUser();
-
-  if (!userData || errorMessage) {
-    return {
-      success: false,
-      message: errorMessage || "User not authenticated",
-    };
-  }
-
-  const feedbackId = String(formData.get("id"));
+): Promise<ActionState> {
+  const { isAdmin, userData } = await getCurrentUser();
+  if (!userData) return { success: false, message: "Please log in first." };
 
   const supabase = await createClient();
-
-  // delete (soft delete)
   const { error } = await supabase
     .from("feedback")
     .update({
       is_deleted: true,
       deleted_by_admin: isAdmin,
-      deleted_at: new Date(),
+      deleted_at: new Date().toISOString(),
     })
-    .eq("id", feedbackId);
+    .eq("id", String(formData.get("id")));
 
-  if (error) {
-    return {
-      success: false,
-      message: error.message,
-    };
-  }
+  if (error) return { success: false, message: error.message };
 
-  // revalidate
-  revalidatePath("/");
-  // redirect home
+  revalidatePath("/", "layout");
   redirect("/");
 }
 
-// voteActionState
-type VoteActionState = {
-  success: boolean;
-  message?: string;
-  error?: string;
-};
-
-// vote toggler
-export const toggleVoteAction = async (
-  prevState: VoteActionState,
+// vote toggle: already voted -> remove vote, else add vote
+export async function toggleVoteAction(
+  prevState: ActionState,
   formData: FormData,
-): Promise<VoteActionState> => {
-  // check auth
-
-  const { userData, errorMessage } = await getCurrentUser();
-
-  if (!userData || errorMessage) {
-    redirect("/auth/login");
-  }
-
-  // ensure profile exists (prevents foreign key errors on votes.user_id)
-  await ensureProfile();
+): Promise<ActionState> {
+  const { userData } = await getCurrentUser();
+  if (!userData) redirect("/auth/login");
 
   const feedbackId = String(formData.get("feedback_id"));
-
   const supabase = await createClient();
 
-  // Check database directly to see if user has already voted
-  const { data: existingVote, error: fetchVoteError } = await supabase
+  const { data: existing } = await supabase
     .from("vote")
     .select("id")
     .eq("user_id", userData.id)
     .eq("feedback_id", feedbackId)
     .maybeSingle();
 
-  if (fetchVoteError) {
-    console.error("Error fetching vote status:", fetchVoteError.message);
-  }
+  const { error } = existing
+    ? await supabase.from("vote").delete().eq("id", existing.id)
+    : await supabase
+        .from("vote")
+        .insert({ feedback_id: feedbackId, user_id: userData.id });
 
-  if (existingVote) {
-    // down vote / unvote
-    const { error } = await supabase
-      .from("vote")
-      .delete()
-      .eq("id", existingVote.id);
+  if (error) return { success: false, message: error.message };
 
-    if (error) {
-      console.error("Error removing vote:", error.message);
-      return { success: false, error: error.message };
-    }
-  } else {
-    // upvote
-    const { error } = await supabase.from("vote").insert({
-      feedback_id: feedbackId,
-      user_id: userData.id,
-    });
-
-    if (error) {
-      console.error("Error inserting vote:", error.message);
-      return { success: false, error: error.message };
-    }
-  }
-
-  // revalidate all path where vote show
-  revalidatePath("/");
-  revalidatePath("/roadmap");
-  revalidatePath(`/feedback/${feedbackId}`);
-
-  return {
-    success: true,
-    message: "Vote toggled successfully",
-  };
-};
+  revalidatePath("/", "layout"); // refresh every page that shows vote counts
+  return { success: true };
+}

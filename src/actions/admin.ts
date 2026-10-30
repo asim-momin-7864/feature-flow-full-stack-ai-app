@@ -1,53 +1,57 @@
-// admin server action
-
 "use server";
 
-import { requireAdmin } from "@/lib/require-admin";
-import { createClient } from "@/lib/supabase/server";
-// enum type
-import { type statusEnumType } from "@/lib/validations";
 import { revalidatePath } from "next/cache";
+import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/require-admin";
+import { statusEnum } from "@/lib/validations";
+import type { ActionState } from "@/actions/feedback";
 
-// action state
-type ActionState = {
-  success: boolean;
-  message?: string;
-  error?: string;
-};
-
-// server func
-export const updateStatusAdminAction = async (
+// change the status of a post (dropdown on the post page)
+export async function updateStatusAdminAction(
   prevState: ActionState,
   formData: FormData,
-): Promise<ActionState> => {
-  // check admin first
+): Promise<ActionState> {
   await requireAdmin();
 
-  // data from form
-  const feedbackId = formData.get("feedback_id") as string;
-  const updatedStatus = formData.get("status") as statusEnumType;
+  const status = statusEnum.safeParse(formData.get("status"));
+  if (!status.success) return { success: false, message: "Invalid status" };
 
   const supabase = await createClient();
-
-  // update the status in database
-  const { error: updateError } = await supabase
+  const { error } = await supabase
     .from("feedback")
-    .update({ status: updatedStatus })
-    .eq("id", feedbackId);
+    .update({ status: status.data })
+    .eq("id", String(formData.get("feedback_id")));
 
-  if (updateError) {
-    return {
-      success: false,
-      error: updateError.message,
-    };
-  }
+  if (error) return { success: false, message: error.message };
 
-  // revalidate
-  revalidatePath(`/feedback/${feedbackId}`);
-  revalidatePath("/");
+  revalidatePath("/", "layout");
+  return { success: true };
+}
 
-  return {
-    success: true,
-    message: "Status updated successfully",
-  };
-};
+// admin page: clear the AI flag on a post
+export async function dismissFlagAction(formData: FormData) {
+  await requireAdmin();
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("feedback")
+    .update({ ai_flagged: false })
+    .eq("id", String(formData.get("id")));
+
+  if (error) throw new Error(error.message);
+  revalidatePath("/", "layout");
+}
+
+// admin page: bring a soft-deleted post back
+export async function restoreFeedbackAction(formData: FormData) {
+  await requireAdmin();
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("feedback")
+    .update({ is_deleted: false, deleted_by_admin: false, deleted_at: null })
+    .eq("id", String(formData.get("id")));
+
+  if (error) throw new Error(error.message);
+  revalidatePath("/", "layout");
+}

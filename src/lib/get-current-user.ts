@@ -1,22 +1,20 @@
-//* this function is to get current user data, check is it admin
-// to avoid repetative code in components and server actions
-import { User } from "@supabase/supabase-js";
+import type { User } from "@supabase/supabase-js";
 import { createClient } from "./supabase/server";
+import ensureProfile from "./ensure-profile";
 
-// return type
-type RetrunType = {
+type CurrentUser = {
   isAdmin: boolean;
   userData: User | null;
   profile: any | null;
   errorMessage: string | null;
 };
 
-export async function getCurrentUser(): Promise<RetrunType> {
+export async function getCurrentUser(): Promise<CurrentUser> {
   const supabase = await createClient();
+  const { data } = await supabase.auth.getUser();
 
-  const { data: currentUser } = await supabase.auth.getUser();
-
-  if (!currentUser?.user) {
+  // not logged in
+  if (!data.user) {
     return {
       isAdmin: false,
       userData: null,
@@ -25,26 +23,22 @@ export async function getCurrentUser(): Promise<RetrunType> {
     };
   }
 
-  // get user profile
-  const { data: userProfile, error: profileError } = await supabase
-    .from("profile")
-    .select("*")
-    .eq("id", currentUser.user.id)
-    .single();
+  // logged in: get the profile, or create it if this is a new user
+  const { profile, error } = await ensureProfile(data.user);
 
-  if (profileError || !userProfile) {
+  if (!profile) {
     return {
       isAdmin: false,
       userData: null,
       profile: null,
-      errorMessage: profileError?.message || "User profile not found",
+      errorMessage: error,
     };
   }
 
   return {
-    isAdmin: userProfile.role === "ADMIN",
-    userData: currentUser.user,
-    profile: userProfile,
+    isAdmin: profile.role === "ADMIN",
+    userData: data.user,
+    profile,
     errorMessage: null,
   };
 }

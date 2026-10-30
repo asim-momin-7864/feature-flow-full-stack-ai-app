@@ -1,4 +1,3 @@
-import ensureProfile from "@/lib/ensure-profile";
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
@@ -25,19 +24,6 @@ export async function GET(request: Request) {
     return NextResponse.redirect(
       new URL(
         `/auth/error?error=${encodeURIComponent(sessionError.message)}`,
-        request.url,
-      ),
-    );
-  }
-
-  // user has a profile
-  const { error: profileError } = await ensureProfile();
-
-  if (profileError) {
-    console.error("ensureProfile error:", profileError);
-    return NextResponse.redirect(
-      new URL(
-        `/auth/error?error=${encodeURIComponent(profileError)}`,
         request.url,
       ),
     );

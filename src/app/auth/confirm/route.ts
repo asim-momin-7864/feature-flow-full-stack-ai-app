@@ -1,4 +1,3 @@
-import ensureProfile from "@/lib/ensure-profile";
 import { createClient } from "@/lib/supabase/server";
 import { type EmailOtpType } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
@@ -26,14 +25,6 @@ export async function GET(request: NextRequest) {
 
   if (verifyError) {
     redirect(`/auth/error?error=${verifyError.message}`);
-  }
-
-  // user has a profile check
-  const { error: profileError } = await ensureProfile();
-
-  if (profileError) {
-    console.error("ensureProfile error on confirm:", profileError);
-    redirect(`/auth/error?error=${encodeURIComponent(profileError)}`);
   }
 
   // all good, redirect

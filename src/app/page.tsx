@@ -1,45 +1,29 @@
-// it is server component
-
 import { FeedSection } from "@/components/custome/feed-section";
 import TrendingSidebar from "@/components/custome/trending-ideas";
-import { FeedSkeleton, SidebarSkeleton } from "@/components/ui/feed-skeleton";
-import { Suspense } from "react";
+import { parseFeedParams, type RawSearchParams } from "@/lib/feed-params";
 
-type SearchParamsPromise = Promise<Record<string, string | string[] | undefined>>;
-
-export default function HomePage({
+export default async function HomePage({
   searchParams,
 }: {
-  searchParams: SearchParamsPromise;
+  searchParams: Promise<RawSearchParams>;
 }) {
+  const params = parseFeedParams(await searchParams);
+
   return (
-    <main className="w-full">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col lg:flex-row gap-8 items-start">
-        {/* Main Feed */}
-        <section className="flex-1 min-w-0 w-full flex flex-col gap-5 sm:gap-6">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
-              Feedback Board
-            </h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              Vote on features or submit your own ideas!
-            </p>
-          </div>
+    <main className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-6 sm:px-6 sm:py-8 lg:flex-row lg:items-start">
+      <section className="flex w-full min-w-0 flex-1 flex-col gap-5">
+        <div>
+          <h1 className="text-2xl font-bold sm:text-3xl">Feedback Board</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Vote on features or submit your own ideas!
+          </p>
+        </div>
+        <FeedSection params={params} />
+      </section>
 
-          <Suspense fallback={<FeedSkeleton />}>
-            <FeedSection searchParams={searchParams} />
-          </Suspense>
-        </section>
-
-        {/* Sidebar */}
-        <aside className="w-full lg:w-72 shrink-0">
-          <div className="lg:sticky lg:top-20">
-            <Suspense fallback={<SidebarSkeleton />}>
-              <TrendingSidebar />
-            </Suspense>
-          </div>
-        </aside>
-      </div>
+      <aside className="w-full lg:sticky lg:top-20 lg:w-80 lg:shrink-0">
+        <TrendingSidebar />
+      </aside>
     </main>
   );
 }
