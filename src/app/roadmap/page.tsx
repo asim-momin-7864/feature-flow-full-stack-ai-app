@@ -43,21 +43,21 @@ async function RoadmapBoard() {
         return (
           <div
             key={statusObj.id}
-            className="flex flex-col gap-3 sm:gap-4 bg-muted/30 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border"
+            className="flex flex-col gap-3 sm:gap-4 bg-muted/30 p-3.5 sm:p-4 rounded-xl border"
           >
             <div className="flex items-center gap-2 mb-1">
               <div className={`w-2.5 h-2.5 rounded-full ${statusObj.color}`} />
-              <h2 className="font-semibold text-xs sm:text-sm uppercase tracking-wider">
+              <h2 className="font-semibold text-sm">
                 {statusObj.label}
               </h2>
-              <span className="text-muted-foreground text-[11px] sm:text-xs font-bold ml-auto bg-background border px-2 py-0.5 rounded-full">
+              <span className="text-muted-foreground text-xs ml-auto">
                 {columnFeedbacks.length}
               </span>
             </div>
 
             <div className="flex flex-col gap-2.5 sm:gap-3">
               {columnFeedbacks.length === 0 ? (
-                <div className="p-4 sm:p-6 border border-dashed rounded-xl bg-background/50 text-muted-foreground text-center text-xs sm:text-sm">
+                <div className="p-4 border border-dashed rounded-lg text-muted-foreground text-center text-sm">
                   No feedback in this stage.
                 </div>
               ) : (
@@ -83,7 +83,7 @@ export default function RoadmapPage() {
       <div className="w-full flex justify-center">
         <div className="w-full max-w-[1400px] px-4 py-6 sm:px-6 sm:py-8 lg:p-8 flex flex-col gap-6 sm:gap-8">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-bold">
               Roadmap
             </h1>
             <p className="text-sm sm:text-base text-muted-foreground mt-1 sm:mt-2">
@@ -94,10 +94,10 @@ export default function RoadmapPage() {
           <Suspense
             fallback={
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6 w-full">
-                <div className="h-64 rounded-xl bg-muted/40 animate-pulse" />
-                <div className="h-64 rounded-xl bg-muted/40 animate-pulse" />
-                <div className="h-64 rounded-xl bg-muted/40 animate-pulse" />
-                <div className="h-64 rounded-xl bg-muted/40 animate-pulse" />
+                <div className="h-64 rounded-xl bg-muted animate-pulse" />
+                <div className="h-64 rounded-xl bg-muted animate-pulse" />
+                <div className="h-64 rounded-xl bg-muted animate-pulse" />
+                <div className="h-64 rounded-xl bg-muted animate-pulse" />
               </div>
             }
           >

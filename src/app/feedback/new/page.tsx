@@ -37,7 +37,7 @@ export default function NewFeedbackPage() {
 
   return (
     <div className="w-full max-w-2xl px-4 py-6 sm:py-10 mx-auto">
-      <Card className="shadow-sm">
+      <Card>
         <CardHeader className="p-4 sm:p-6 pb-2 sm:pb-4">
           <CardTitle className="text-xl sm:text-2xl font-bold">Submit Feedback</CardTitle>
           <CardDescription className="text-xs sm:text-sm">

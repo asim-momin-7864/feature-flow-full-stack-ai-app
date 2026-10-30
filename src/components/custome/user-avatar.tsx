@@ -5,23 +5,28 @@ import { useState } from "react";
 export function UserAvatar({
   url,
   fallbackText,
+  className = "",
 }: {
   url?: string | null;
   fallbackText: string;
+  className?: string;
 }) {
   const [hasError, setHasError] = useState(false);
 
+  if (url && !hasError) {
+    return (
+      <img
+        src={url}
+        alt="Avatar"
+        className={`w-full h-full object-cover ${className}`}
+        onError={() => setHasError(true)}
+      />
+    );
+  }
+
   return (
-    <>
-      <span className="absolute">{fallbackText}</span>
-      {url && !hasError && (
-        <img
-          src={url}
-          alt="Avatar"
-          className="absolute inset-0 w-full h-full object-cover bg-background"
-          onError={() => setHasError(true)}
-        />
-      )}
-    </>
+    <span className={`flex items-center justify-center w-full h-full text-[10px] font-bold uppercase text-foreground ${className}`}>
+      {fallbackText}
+    </span>
   );
 }

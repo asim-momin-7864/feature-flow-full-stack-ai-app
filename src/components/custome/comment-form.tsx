@@ -12,7 +12,7 @@ const CommentForm = ({ feedback_id }: { feedback_id: string }) => {
     message: "",
   });
   return (
-    <Card className="lg:sticky lg:top-24 border-muted/60 shadow-sm">
+    <Card className="lg:sticky lg:top-24">
       <CardHeader className="p-4 sm:p-5 pb-2 sm:pb-3">
         <CardTitle className="text-base sm:text-lg font-bold">Leave a comment</CardTitle>
       </CardHeader>
@@ -22,7 +22,7 @@ const CommentForm = ({ feedback_id }: { feedback_id: string }) => {
           <div className="space-y-3 sm:space-y-4">
             <Textarea
               placeholder="Share your thoughts or suggest an idea..."
-              className="min-h-24 sm:min-h-28 text-xs sm:text-sm resize-y focus-visible:ring-primary/50"
+              className="min-h-24 sm:min-h-28 text-xs sm:text-sm resize-y"
               name="content"
               required
             />

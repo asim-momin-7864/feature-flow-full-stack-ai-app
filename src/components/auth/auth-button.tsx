@@ -20,7 +20,7 @@ export async function AuthButton() {
         <span className="sm:hidden">New</span>
       </Link>
       <div className="flex items-center gap-1.5 sm:gap-2">
-        <div className="h-7 w-7 sm:h-8 sm:w-8 shrink-0 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs uppercase overflow-hidden border relative">
+        <div className="h-7 w-7 sm:h-8 sm:w-8 shrink-0 rounded-full overflow-hidden border bg-muted">
           <UserAvatar
             url={profile?.avatar_url}
             fallbackText={

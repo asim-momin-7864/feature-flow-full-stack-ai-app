@@ -3,7 +3,6 @@
 import { PAGE_SIZE, parseFeedParams } from "@/lib/feed-params";
 import { getFeed, getMyVotedIds } from "@/lib/feed-queries";
 import Link from "next/link";
-import { SearchX } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { FeedbackCard } from "./feedback-card";
 import { FilterBar } from "./filter-bar";
@@ -27,48 +26,30 @@ export async function FeedSection({
 
   return (
     <div className="flex flex-col gap-4 sm:gap-6 w-full">
-      {/* Search & Filter Controls */}
       <FilterBar params={params} />
 
-      {/* Results Header or Count when filtered */}
+      {/* Result count when filtered */}
       {isFiltered && total > 0 && (
-        <div className="flex items-center justify-between px-1 text-xs text-muted-foreground font-medium">
-          <span>
-            Found <span className="text-foreground font-semibold">{total}</span>{" "}
-            {total === 1 ? "result" : "results"}
-          </span>
-          <Link
-            href="/"
-            className="text-xs text-primary hover:underline underline-offset-4"
-          >
-            Clear filters
-          </Link>
-        </div>
+        <p className="text-sm text-muted-foreground">
+          Found {total} {total === 1 ? "result" : "results"}
+        </p>
       )}
 
-      {/* Main Feedback List or Empty State */}
+      {/* Feedback list or empty state */}
       {items.length === 0 ? (
-        <div className="w-full text-center py-12 px-6 border border-dashed border-border/80 rounded-2xl bg-card/40 flex flex-col items-center justify-center gap-3">
-          <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
-            <SearchX className="w-5 h-5" />
-          </div>
-          <div className="space-y-1">
-            <h3 className="font-semibold text-sm sm:text-base text-foreground">
-              No feedback found
-            </h3>
-            <p className="text-xs sm:text-sm text-muted-foreground max-w-sm">
-              {isFiltered
-                ? "We couldn't find anything matching your search or filters. Try adjusting your search query or reset filters."
-                : "No feedback has been submitted yet. Be the first to share an idea!"}
-            </p>
-          </div>
+        <div className="w-full text-center py-12 px-4 border border-dashed rounded-xl bg-muted/20">
+          <p className="text-sm text-muted-foreground">
+            {isFiltered
+              ? "No feedback matches your search. Try different filters."
+              : "No feedback yet. Be the first to submit an idea!"}
+          </p>
           {isFiltered && (
             <Link
               href="/"
               className={buttonVariants({
                 variant: "outline",
                 size: "sm",
-                className: "mt-1 rounded-xl text-xs",
+                className: "mt-4",
               })}
             >
               Reset Filters
@@ -76,7 +57,7 @@ export async function FeedSection({
           )}
         </div>
       ) : (
-        <div className="flex flex-col gap-3 sm:gap-4 w-full">
+        <div className="flex flex-col gap-3 sm:gap-4">
           {items.map((item) => (
             <FeedbackCard
               key={item.id}
@@ -87,7 +68,6 @@ export async function FeedSection({
         </div>
       )}
 
-      {/* Pagination */}
       <Pager params={params} totalPages={totalPages} />
     </div>
   );

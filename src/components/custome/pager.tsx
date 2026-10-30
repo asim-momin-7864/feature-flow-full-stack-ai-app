@@ -1,7 +1,6 @@
 // pager
 import { FeedParams } from "@/lib/feed-params";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 
 function pageLink(params: FeedParams, page: number) {
@@ -27,64 +26,34 @@ export function Pager({
   const hasNext = params.page < totalPages;
 
   return (
-    <nav
-      aria-label="Pagination Navigation"
-      className="flex items-center justify-between sm:justify-center gap-2 sm:gap-4 pt-4 sm:pt-6 pb-2"
-    >
+    <nav className="flex items-center justify-center gap-4 pt-4 pb-2">
       {hasPrev ? (
         <Link
           href={pageLink(params, params.page - 1)}
-          className={buttonVariants({
-            variant: "outline",
-            size: "sm",
-            className: "h-8 px-2.5 sm:px-3 text-xs sm:text-sm rounded-xl gap-1",
-          })}
+          className={buttonVariants({ variant: "outline", size: "sm" })}
         >
-          <ChevronLeft className="w-4 h-4" />
-          <span>Previous</span>
+          Previous
         </Link>
       ) : (
-        <span
-          className={buttonVariants({
-            variant: "outline",
-            size: "sm",
-            className:
-              "h-8 px-2.5 sm:px-3 text-xs sm:text-sm rounded-xl gap-1 opacity-40 cursor-not-allowed pointer-events-none",
-          })}
-        >
-          <ChevronLeft className="w-4 h-4" />
-          <span>Previous</span>
+        <span className={buttonVariants({ variant: "outline", size: "sm" }) + " opacity-40 cursor-not-allowed"}>
+          Previous
         </span>
       )}
 
-      <div className="text-xs sm:text-sm font-medium text-muted-foreground px-3 py-1 rounded-xl bg-muted/40 border border-border/50">
-        Page <span className="text-foreground font-semibold">{params.page}</span> of{" "}
-        <span className="text-foreground font-semibold">{totalPages}</span>
-      </div>
+      <span className="text-sm text-muted-foreground">
+        Page {params.page} of {totalPages}
+      </span>
 
       {hasNext ? (
         <Link
           href={pageLink(params, params.page + 1)}
-          className={buttonVariants({
-            variant: "outline",
-            size: "sm",
-            className: "h-8 px-2.5 sm:px-3 text-xs sm:text-sm rounded-xl gap-1",
-          })}
+          className={buttonVariants({ variant: "outline", size: "sm" })}
         >
-          <span>Next</span>
-          <ChevronRight className="w-4 h-4" />
+          Next
         </Link>
       ) : (
-        <span
-          className={buttonVariants({
-            variant: "outline",
-            size: "sm",
-            className:
-              "h-8 px-2.5 sm:px-3 text-xs sm:text-sm rounded-xl gap-1 opacity-40 cursor-not-allowed pointer-events-none",
-          })}
-        >
-          <span>Next</span>
-          <ChevronRight className="w-4 h-4" />
+        <span className={buttonVariants({ variant: "outline", size: "sm" }) + " opacity-40 cursor-not-allowed"}>
+          Next
         </span>
       )}
     </nav>

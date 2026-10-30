@@ -84,17 +84,14 @@ const FeedbackDetailsHelper = async ({
   }
 
   return (
-    <div className="w-full space-y-6 sm:space-y-8 animate-in fade-in duration-500">
+    <div className="w-full space-y-6 sm:space-y-8">
       {/* back link */}
       <div className="mb-4 sm:mb-6">
         <Link
           href="/"
-          className="group inline-flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium text-muted-foreground hover:text-foreground transition-colors -ml-2 p-2 rounded-md hover:bg-muted/50"
+          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
         >
-          <CornerUpLeft
-            size={16}
-            className="transition-transform group-hover:-translate-x-0.5 group-hover:-translate-y-0.5"
-          />
+          <CornerUpLeft size={16} />
           Go back
         </Link>
       </div>
@@ -104,20 +101,20 @@ const FeedbackDetailsHelper = async ({
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <Badge
             variant="outline"
-            className={`px-2.5 py-0.5 sm:px-3 sm:py-1 text-xs sm:text-sm font-semibold rounded-md ${styles.badge}`}
+            className={`px-2.5 py-0.5 text-xs font-semibold rounded-md ${styles.badge}`}
           >
             {feedbackData.category}
           </Badge>
           <Badge
             variant="outline"
-            className="capitalize px-2.5 py-0.5 sm:px-3 sm:py-1 text-xs sm:text-sm rounded-md"
+            className="capitalize px-2.5 py-0.5 text-xs rounded-md"
           >
             {feedbackData.status.toLowerCase().replace("_", " ")}
           </Badge>
         </div>
 
         <div className="flex items-start justify-between gap-3 sm:gap-4">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-foreground leading-tight break-words flex-1 min-w-0">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground leading-tight break-words flex-1 min-w-0">
             {feedbackData.title}
           </h1>
           {(isOwner || isAdmin) && (
@@ -143,16 +140,16 @@ const FeedbackDetailsHelper = async ({
       </div>
 
       {/* Description Content */}
-      <Card className="w-full border-muted/60 shadow-sm bg-card/50">
-        <CardContent className="p-4 sm:p-6 md:p-8">
-          <p className="whitespace-pre-wrap leading-relaxed text-sm sm:text-base md:text-lg text-foreground/90 break-words">
+      <Card className="w-full">
+        <CardContent className="p-4 sm:p-6">
+          <p className="whitespace-pre-wrap leading-relaxed text-sm sm:text-base text-foreground break-words">
             {feedbackData.description}
           </p>
         </CardContent>
       </Card>
 
       {/* Upvote Banner */}
-      <div className="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 md:p-6 bg-primary/5 rounded-xl border border-primary/10">
+      <div className="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 bg-muted/40 rounded-xl border">
         <div className="space-y-1">
           <h3 className="font-semibold text-sm sm:text-base text-foreground">
             Do you agree with this feedback?
@@ -167,12 +164,10 @@ const FeedbackDetailsHelper = async ({
       </div>
 
       {isAdmin && (
-        <div className="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 md:p-6 bg-secondary/30 rounded-xl border border-border border-dashed shadow-sm">
+        <div className="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 bg-muted/30 rounded-xl border border-dashed">
           <div className="space-y-1">
             <h3 className="font-semibold text-sm sm:text-base text-foreground flex items-center gap-2">
-              <span className="bg-primary/10 text-primary px-2 py-0.5 rounded text-[10px] sm:text-xs tracking-wider font-bold uppercase">
-                Admin
-              </span>
+              <Badge variant="secondary" className="text-xs">Admin</Badge>
               Update Status
             </h3>
             <p className="text-xs sm:text-sm text-muted-foreground">
@@ -188,10 +183,10 @@ const FeedbackDetailsHelper = async ({
         </div>
       )}
 
-      <Separator className="my-6 sm:my-8 md:my-10" />
+      <Separator className="my-6 sm:my-8" />
 
       {/* Comments Section */}
-      <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10 w-full">
+      <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 sm:gap-8 w-full">
         {/* On mobile, comment form comes first so user can write quickly without scrolling past all comments */}
         <div className="order-first lg:order-last lg:col-span-1">
           <CommentForm feedback_id={feedbackData.id} />
@@ -199,12 +194,9 @@ const FeedbackDetailsHelper = async ({
 
         {/* Comments List */}
         <div className="order-last lg:order-first lg:col-span-2 space-y-4 sm:space-y-6">
-          <h2 className="text-xl sm:text-2xl font-bold tracking-tight flex items-center gap-2.5 sm:gap-3">
+          <h2 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
             Comments
-            <Badge
-              variant="secondary"
-              className="bg-primary/20 rounded-full px-2.5 py-0.5 text-xs sm:text-sm font-medium"
-            >
+            <Badge variant="secondary">
               {feedbackData.comment_count ??
                 (feedbackData?.comment as [{ count: number }])?.[0]?.count ??
                 0}

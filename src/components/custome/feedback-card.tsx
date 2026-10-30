@@ -102,7 +102,7 @@ export async function FeedbackCard({
         {!isCompact && (
           <CardContent className="px-4 sm:px-6 pb-3 group-hover:opacity-80 transition-opacity">
             <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-muted-foreground">
-              <div className="h-5 w-5 sm:h-6 sm:w-6 shrink-0 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-[10px] sm:text-xs uppercase overflow-hidden border relative">
+              <div className="h-5 w-5 sm:h-6 sm:w-6 shrink-0 rounded-full overflow-hidden border bg-muted">
                 <UserAvatar
                   url={feedbackData.profile?.avatar_url}
                   fallbackText={
@@ -135,7 +135,7 @@ export async function FeedbackCard({
 
           <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground">
             {isCompact && (
-              <div className="h-5 w-5 shrink-0 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-[10px] uppercase overflow-hidden border relative">
+              <div className="h-5 w-5 shrink-0 rounded-full overflow-hidden border bg-muted">
                 <UserAvatar
                   url={feedbackData.profile?.avatar_url}
                   fallbackText={

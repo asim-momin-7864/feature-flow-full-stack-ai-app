@@ -37,10 +37,10 @@ const CommentListFetch = async ({ feedbackId }: { feedbackId: string }) => {
         return (
           <div
             key={comment.id}
-            className="flex gap-3 sm:gap-4 p-3.5 sm:p-5 rounded-xl bg-card border shadow-sm"
+            className="flex gap-3 sm:gap-4 p-3.5 sm:p-5 rounded-xl bg-card border"
           >
             {/* Avatar */}
-            <div className="h-8 w-8 sm:h-10 sm:w-10 shrink-0 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs sm:text-sm uppercase overflow-hidden border relative">
+            <div className="h-8 w-8 sm:h-10 sm:w-10 shrink-0 rounded-full overflow-hidden border bg-muted">
               <UserAvatar
                 url={comment.profile?.avatar_url}
                 fallbackText={comment.profile?.full_name?.charAt(0) || "U"}
@@ -54,7 +54,7 @@ const CommentListFetch = async ({ feedbackId }: { feedbackId: string }) => {
                   <p className="font-semibold text-xs sm:text-sm text-foreground truncate">
                     {comment.profile?.full_name || "Anonymous"}
                   </p>
-                  <p className="text-[11px] sm:text-xs text-muted-foreground">
+                  <p className="text-xs text-muted-foreground">
                     {new Date(comment.created_at).toLocaleDateString(
                       undefined,
                       {
@@ -78,12 +78,12 @@ const CommentListFetch = async ({ feedbackId }: { feedbackId: string }) => {
               </div>
 
               {comment.is_deleted || comment.deleted_at ? (
-                <div className="text-xs sm:text-sm text-muted-foreground italic border border-dashed rounded-md p-2.5 sm:p-3 bg-muted/20 mt-1">
+                <div className="text-xs sm:text-sm text-muted-foreground italic border border-dashed rounded-md p-2.5 sm:p-3 mt-1">
                   This comment was deleted by{" "}
                   {comment.deleted_by_admin ? "an admin" : "the author"}.
                 </div>
               ) : (
-                <p className="text-xs sm:text-sm text-foreground/90 whitespace-pre-wrap leading-relaxed break-words">
+                <p className="text-xs sm:text-sm text-foreground whitespace-pre-wrap leading-relaxed break-words">
                   {comment.content}
                 </p>
               )}
