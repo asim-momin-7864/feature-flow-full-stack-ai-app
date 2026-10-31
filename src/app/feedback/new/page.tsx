@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { SimilarIdeas } from "@/components/custome/similar-ideas";
 
 export default function NewFeedbackPage() {
   const [state, formAction, isPending] = useActionState(createFeedbackAction, {
@@ -90,6 +91,7 @@ export default function NewFeedbackPage() {
             <p className="text-xs text-muted-foreground">
               5 to 1000 characters.
             </p>
+            <SimilarIdeas />
             {state.errors?.description && (
               <p className="text-sm text-destructive">
                 {state.errors.description[0]}
