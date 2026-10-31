@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { CreateFeedbackSchema } from "@/lib/validations";
 import { getCurrentUser } from "@/lib/get-current-user";
+import { runAiStep } from "@/lib/ai-step";
 
 // what every action returns to its form
 export type ActionState = {
@@ -27,13 +28,30 @@ export async function createFeedbackAction(
   }
 
   const supabase = await createClient();
-  const { error } = await supabase
+  const { data: created, error } = await supabase
     .from("feedback")
-    .insert({ ...parsed.data, user_id: userData.id }); // user_id is checked by RLS
+    .insert({ ...parsed.data, user_id: userData.id }) // user_id is checked by RLS
+    .select("id")
+    .single();
 
-  if (error) return { success: false, message: error.message };
+  if (error || !created) {
+    return {
+      success: false,
+      message: error?.message ?? "Could not save feedback.",
+    };
+  }
 
-  // (AI embedding + tags will be added here later, inside try/catch)
+  // AI step: if anything fails, the post is already saved
+  try {
+    await runAiStep(
+      created.id,
+      userData.id,
+      parsed.data.title,
+      parsed.data.description,
+    );
+  } catch (e) {
+    console.error("AI step failed:", e);
+  }
 
   revalidatePath("/", "layout");
   redirect("/");

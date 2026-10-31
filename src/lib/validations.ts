@@ -47,6 +47,7 @@ export type FeedbackType = z.infer<typeof CreateFeedbackSchema> & {
   deleted_by_admin: boolean;
   deleted_at: string | null;
   vote_count: number; // from vw_feedback_details
+  tags: string[] | null;
   comment_count: number; // from vw_feedback_details
   profile: ProfileInfo;
 };

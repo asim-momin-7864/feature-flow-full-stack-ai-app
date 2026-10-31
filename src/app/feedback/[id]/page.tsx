@@ -16,6 +16,12 @@ import CommentForm from "@/components/custome/comment-form";
 import CommentList from "@/components/custome/comment-list";
 import { ProfileAvatar } from "@/components/custome/profile-avatar";
 
+const TAG_COLORS = [
+  "bg-blue-100 text-blue-800 dark:bg-blue-500/20 dark:text-blue-300",
+  "bg-emerald-100 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-300",
+  "bg-violet-100 text-violet-800 dark:bg-violet-500/20 dark:text-violet-300",
+];
+
 export default async function FeedbackDetailsPage({
   params,
 }: {
@@ -71,6 +77,16 @@ export default async function FeedbackDetailsPage({
         <Badge variant="outline" className="capitalize">
           {feedback.status.toLowerCase().replace("_", " ")}
         </Badge>
+        <div className="flex flex-wrap gap-2">
+          {feedback.tags?.map((tag, i) => (
+            <span
+              key={tag}
+              className={`rounded-full px-3 py-1 text-xs font-medium sm:px-4 sm:py-1.5 sm:text-sm ${TAG_COLORS[i % 3]}`}
+            >
+              #{tag}
+            </span>
+          ))}
+        </div>
       </div>
 
       {/* title + delete */}

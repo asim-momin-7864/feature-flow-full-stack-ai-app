@@ -1,32 +1,40 @@
 import { EnvVarWarning } from "@/components/auth/env-var-warning";
 import { AuthButton } from "@/components/auth/auth-button";
 import { ThemeSwitcher } from "@/components/auth/theme-switcher";
+import { getCurrentUser } from "@/lib/get-current-user";
 import { hasEnvVars } from "@/lib/utils";
 import Link from "next/link";
 import { Suspense } from "react";
 
-export function Navbar() {
+const navLinkClass =
+  "text-sm font-normal text-muted-foreground hover:text-foreground transition-colors";
+
+export async function Navbar() {
+  const { isAdmin } = await getCurrentUser();
+
   return (
-    <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16 sticky top-0 bg-background/80 backdrop-blur-md z-40">
-      <div className="w-full max-w-5xl flex justify-between items-center px-3 sm:px-6 text-sm gap-2">
-        {/* Left: Brand and Roadmap */}
-        <div className="flex items-center gap-3 sm:gap-6 font-semibold">
+    <nav className="sticky top-0 z-40 w-full border-b border-b-foreground/10 bg-background/80 backdrop-blur-md">
+      <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-x-3 gap-y-2 px-3 py-2 text-sm sm:h-16 sm:flex-nowrap sm:px-6 sm:py-0">
+        {/* Left: brand and links */}
+        <div className="flex items-center gap-4 sm:gap-6">
           <Link
             href="/"
-            className="font-bold text-sm sm:text-base tracking-tight shrink-0 hover:opacity-80 transition-opacity"
+            className="shrink-0 text-base font-bold tracking-tight transition-opacity hover:opacity-80"
           >
             Feature Flow
           </Link>
-          <Link
-            href="/roadmap"
-            className="text-xs sm:text-sm font-normal text-muted-foreground hover:text-foreground transition-colors"
-          >
+          <Link href="/roadmap" className={navLinkClass}>
             Roadmap
           </Link>
+          {isAdmin && (
+            <Link href="/admin" className={navLinkClass}>
+              Admin
+            </Link>
+          )}
         </div>
 
-        {/* Right: Actions, Theme, Auth */}
-        <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+        {/* Right: theme and auth (wraps to its own row on phones) */}
+        <div className="ml-auto flex items-center gap-2 sm:gap-3">
           <ThemeSwitcher />
           {!hasEnvVars ? (
             <EnvVarWarning />

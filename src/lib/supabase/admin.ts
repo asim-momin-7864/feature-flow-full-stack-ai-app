@@ -1,5 +1,5 @@
 //* this is special admin supabase client - which have super admin previliges
-"server-only";
+import "server-only";
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
