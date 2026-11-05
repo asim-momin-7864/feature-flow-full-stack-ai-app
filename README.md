@@ -275,5 +275,3 @@ I used AI assistants to explain ideas, review code, fix errors and help write th
 ## Contact
 
 Asim Momin · Full-stack developer (fresher)
-
-Portfolio: _(add link)_ · LinkedIn: _(add link)_ · Email: _(add email)_
