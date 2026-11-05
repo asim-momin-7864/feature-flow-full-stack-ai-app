@@ -12,27 +12,31 @@ It also has two small AI features: it finds similar ideas, and it adds tags to n
 
 **Home feed (desktop)**
 
-_(add screenshot here)_
+![Home feed (desktop)](docs/screenshots/home.png)
 
 **Home feed (mobile)**
 
-_(add screenshot here)_
+![Home feed (mobile)](docs/screenshots/mobile.png)
+
+**Login Page**
+
+![Login Page](docs/screenshots/login.png)
 
 **Post page with AI tags and comments**
 
-_(add screenshot here)_
+![Post page with AI tags and comments](docs/screenshots/feedback-page.png)
 
 **Check similar ideas**
 
-_(add screenshot here)_
+![Check similar ideas](docs/screenshots/ai-check.png)
 
 **Roadmap**
 
-_(add screenshot here)_
+![Roadmap](docs/screenshots/roadmap.png)
 
 **Admin dashboard**
 
-_(add screenshot here)_
+![Admin dashboard](docs/screenshots/dashboard.png)
 
 ---
 
