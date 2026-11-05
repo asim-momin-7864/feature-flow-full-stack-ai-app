@@ -1,19 +1,16 @@
 -- =====================================================================
--- Feature Flow: final database schema (simplified "lite" version)
--- Reference file for a FRESH Supabase project. Run top to bottom in the
--- SQL editor. Your live database already has all of this; the only
--- change it needed was the trim script (drop ai_runs, urgency, ai_status,
--- and recreate the view).
+-- Feature Flow: database schema (final, "lite" version)
+-- Run top to bottom in the Supabase SQL editor on a FRESH project.
 --
 -- Tables : profile, feedback, comment, vote, feedback_embeddings
 -- View   : vw_feedback_details
 -- Func   : match_similar_feedback
--- Rules  : RLS is ON for every table (section 7)
+-- Rules  : Row Level Security (RLS) is ON for every table (section 6)
 -- =====================================================================
 
 
 -- ---------------------------------------------------------------------
--- 1. Extension (pgvector, used for AI duplicate search)
+-- 1. Extension: pgvector (used for AI duplicate search)
 -- ---------------------------------------------------------------------
 create extension if not exists vector with schema extensions;
 
@@ -153,7 +150,7 @@ $$;
 
 
 -- ---------------------------------------------------------------------
--- 6. Turn on Row Level Security for every table
+-- 6. Row Level Security: turn it on for every table
 -- ---------------------------------------------------------------------
 alter table public.profile             enable row level security;
 alter table public.feedback            enable row level security;
@@ -164,10 +161,12 @@ alter table public.feedback_embeddings enable row level security;
 
 -- ---------------------------------------------------------------------
 -- 7. Policies
---    Admin check used below (it reads profile, a different table than
---    the one protected, except on profile itself where it is a SELECT):
+--    Admin check used below:
 --      exists (select 1 from public.profile
 --              where id = auth.uid() and role = 'ADMIN')
+--    Known limit: RLS controls rows, not columns. An owner can update any
+--    column of their own post or comment. The server actions only send
+--    the allowed fields.
 -- ---------------------------------------------------------------------
 
 -- ---- profile ----
@@ -254,7 +253,8 @@ create policy "embeddings: signed-in users can read"
 
 -- ---------------------------------------------------------------------
 -- 8. Make yourself admin (run once, after you have signed up)
---    Find your id: Authentication -> Users, or select id, full_name from public.profile;
+--    Find your id: Authentication -> Users, or
+--    select id, full_name from public.profile;
 -- ---------------------------------------------------------------------
 -- update public.profile set role = 'ADMIN' where id = 'YOUR-USER-UUID';
 
