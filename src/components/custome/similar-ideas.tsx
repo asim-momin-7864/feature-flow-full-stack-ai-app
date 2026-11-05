@@ -72,10 +72,6 @@ export function SimilarIdeas() {
         {loading ? "Checking..." : "Check similar ideas"}
       </Button>
 
-      <p className="text-xs text-muted-foreground">
-        Tip: type &quot;Export feedback as CSV&quot; in the title and click Check similar ideas.
-      </p>
-
       {message && <p className="text-sm text-muted-foreground">{message}</p>}
 
       {matches.length > 0 && (
