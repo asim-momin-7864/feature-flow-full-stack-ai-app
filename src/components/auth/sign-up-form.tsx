@@ -94,6 +94,13 @@ export function SignUpForm({
                 Login
               </Link>
             </div>
+            <div className="mt-4 text-center text-xs text-muted-foreground">
+              Just looking around? Test credentials are on the{" "}
+              <Link href="/auth/login" className="hover:underline underline-offset-4">
+                login page
+              </Link>
+              .
+            </div>
           </form>
         </CardContent>
       </Card>
