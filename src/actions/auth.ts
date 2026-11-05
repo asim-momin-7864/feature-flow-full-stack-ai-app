@@ -80,7 +80,7 @@ export async function signupAction(
   const supabase = await createClient();
   const origin = (await headers()).get("origin") ?? "http://localhost:3000";
 
-  const { data: signUpData, error } = await supabase.auth.signUp({
+  const { error } = await supabase.auth.signUp({
     email,
     password,
     options: {
