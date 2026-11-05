@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 
 const DeleteCommentButton = ({ commentId, feedbackId }: { commentId: string, feedbackId: string }) => {
   // server action
-  const [state, formAction, isPending] = useActionState(deleteCommentAction, {
+  const [, formAction, isPending] = useActionState(deleteCommentAction, {
     success: false,
     message: "",
   });

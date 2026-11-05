@@ -1,5 +1,4 @@
 import { signInWithGoogle } from "@/actions/auth";
-// Adjust the import path if you saved the action somewhere else
 
 export function GoogleSignInButton() {
   return (

@@ -97,6 +97,18 @@ export function SignUpForm({
           </form>
         </CardContent>
       </Card>
+
+      {/* Test credentials notice box (outside form) */}
+      <div className="rounded-lg border border-dashed border-muted-foreground/30 bg-muted/40 p-4 text-center text-sm text-muted-foreground break-words">
+        Just looking around? Test credentials are on the{" "}
+        <Link
+          href="/auth/login"
+          className="font-medium text-foreground underline-offset-4 hover:underline"
+        >
+          login page
+        </Link>
+        .
+      </div>
     </div>
   );
 }
