@@ -4,7 +4,16 @@ Feature Flow is a website where people share product ideas and bug reports.
 Other users can upvote and comment. The admin moves each idea across a roadmap.
 It also has two small AI features: it finds similar ideas, and it adds tags to new posts.
 
-**Status:** works on my computer. Not deployed yet.
+---
+
+### 🔗 Quick Links
+
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://feature-flow-full-stack-ai-app.vercel.app)
+&nbsp;
+[![Source Code](https://img.shields.io/badge/Source_Code-GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/asim-momin-7864/feature-flow-full-stack-ai-app)
+
+- 🌐 **Live Application:** [feature-flow-full-stack-ai-app.vercel.app](https://feature-flow-full-stack-ai-app.vercel.app)
+- 💻 **GitHub Repository:** [github.com/asim-momin-7864/feature-flow-full-stack-ai-app](https://github.com/asim-momin-7864/feature-flow-full-stack-ai-app)
 
 ---
 
