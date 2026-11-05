@@ -89,6 +89,11 @@ export function LoginForm({
                 Sign up
               </Link>
             </div>
+            <div className="mt-4 space-y-1 text-center text-xs text-muted-foreground break-words">
+              <p>For testing, use these credentials:</p>
+              <p>Admin: admin444@example.com / admin12345</p>
+              <p>User: user1@example.com / user12345</p>
+            </div>
           </form>
         </CardContent>
       </Card>
