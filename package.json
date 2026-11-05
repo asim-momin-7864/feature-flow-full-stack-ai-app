@@ -4,8 +4,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint .",
-    "seed": "tsx scripts/seed.ts"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@ai-sdk/google": "^4.0.109",

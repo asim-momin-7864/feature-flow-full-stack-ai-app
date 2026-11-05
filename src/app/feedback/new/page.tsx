@@ -40,6 +40,7 @@ export default function NewFeedbackPage() {
             <Input
               id="title"
               name="title"
+              defaultValue="Export feedback as CSV"
               placeholder="E.g. Add dark mode"
               maxLength={100}
               required
@@ -83,6 +84,7 @@ export default function NewFeedbackPage() {
             <Textarea
               id="description"
               name="description"
+              defaultValue="Allow workspace managers to export feedback items, votes, and roadmap statuses to a CSV spreadsheet for sprint planning and reporting."
               placeholder="Describe your idea or the problem in detail..."
               maxLength={1000}
               required
@@ -119,6 +121,25 @@ export default function NewFeedbackPage() {
           </div>
         </form>
       </Card>
+
+      {/* Demo / test info notice box (outside form) */}
+      <div className="mt-4 sm:mt-6 rounded-lg border border-dashed border-muted-foreground/30 bg-muted/40 p-4 text-sm text-muted-foreground space-y-2 break-words">
+        <p className="font-medium text-foreground/90 text-center">For testing / demo submission:</p>
+        <div className="space-y-1 text-xs sm:text-sm">
+          <p>
+            <span className="font-semibold text-foreground/80">Title:</span> Export feedback as CSV
+          </p>
+          <p>
+            <span className="font-semibold text-foreground/80">Category:</span> Feature Request
+          </p>
+          <p>
+            <span className="font-semibold text-foreground/80">Description:</span> Allow workspace managers to export feedback items, votes, and roadmap statuses to a CSV spreadsheet for sprint planning and reporting.
+          </p>
+        </div>
+        <p className="text-xs text-muted-foreground text-center pt-1 border-t border-dashed border-muted-foreground/20">
+          Tip: Click <span className="font-medium text-foreground">&quot;Check similar ideas&quot;</span> to test AI duplicate detection against existing ideas!
+        </p>
+      </div>
     </main>
   );
 }
