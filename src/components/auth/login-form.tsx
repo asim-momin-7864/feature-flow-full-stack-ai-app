@@ -89,14 +89,22 @@ export function LoginForm({
                 Sign up
               </Link>
             </div>
-            <div className="mt-4 space-y-1 text-center text-xs text-muted-foreground break-words">
-              <p>For testing, use these credentials:</p>
-              <p>Admin: admin444@example.com / admin12345</p>
-              <p>User: user1@example.com / user12345</p>
-            </div>
           </form>
         </CardContent>
       </Card>
+
+      {/* Test credentials notice box (outside form) */}
+      <div className="rounded-lg border border-dashed border-muted-foreground/30 bg-muted/40 p-4 text-center text-sm text-muted-foreground space-y-1.5 break-words">
+        <p className="font-medium text-foreground/90">For testing, use these credentials:</p>
+        <p>
+          Admin: <span className="font-mono text-foreground/90">admin444@example.com</span> /{" "}
+          <span className="font-mono text-foreground/90">admin12345</span>
+        </p>
+        <p>
+          User: <span className="font-mono text-foreground/90">user1@example.com</span> /{" "}
+          <span className="font-mono text-foreground/90">user12345</span>
+        </p>
+      </div>
     </div>
   );
 }
