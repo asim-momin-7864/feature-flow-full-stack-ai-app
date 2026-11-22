@@ -1,23 +1,7 @@
--- =====================================================================
+
 -- Feature Flow: database schema (final, "lite" version)
--- Run top to bottom in the Supabase SQL editor on a FRESH project.
---
--- Tables : profile, feedback, comment, vote, feedback_embeddings
--- View   : vw_feedback_details
--- Func   : match_similar_feedback
--- Rules  : Row Level Security (RLS) is ON for every table (section 6)
--- =====================================================================
 
-
--- ---------------------------------------------------------------------
--- 1. Extension: pgvector (used for AI duplicate search)
--- ---------------------------------------------------------------------
 create extension if not exists vector with schema extensions;
-
-
--- ---------------------------------------------------------------------
--- 2. Tables
--- ---------------------------------------------------------------------
 
 -- One row per user. id is the same id as auth.users.
 create table public.profile (
@@ -79,9 +63,6 @@ create table public.feedback_embeddings (
 );
 
 
--- ---------------------------------------------------------------------
--- 3. Indexes (primary keys and the unique pair already have indexes)
--- ---------------------------------------------------------------------
 create index feedback_created_at_idx on public.feedback (created_at desc);
 create index feedback_status_idx     on public.feedback (status);
 create index feedback_category_idx   on public.feedback (category);
@@ -91,10 +72,6 @@ create index votes_user_idx          on public.vote (user_id);
 -- No vector index on purpose: exact search is fast for a few hundred rows.
 
 
--- ---------------------------------------------------------------------
--- 4. View: feed data with counts computed in SQL (one query per page)
---    security_invoker = on  ->  the caller's RLS applies to the view
--- ---------------------------------------------------------------------
 create view public.vw_feedback_details
 with (security_invoker = on)
 as
@@ -120,11 +97,6 @@ left join public.profile p on p.id = f.user_id;
 grant select on public.vw_feedback_details to anon, authenticated;
 
 
--- ---------------------------------------------------------------------
--- 5. Function: find similar posts (AI duplicate check)
---    <=> is cosine distance, so 1 - distance = similarity (1 = identical).
---    Exact search over every stored vector; capped at 20 results.
--- ---------------------------------------------------------------------
 create or replace function public.match_similar_feedback(
   query_embedding extensions.vector(768),
   match_threshold float,
@@ -148,10 +120,8 @@ as $$
   limit least(match_count, 20);
 $$;
 
+--  Row Level Security: turn it on for every table
 
--- ---------------------------------------------------------------------
--- 6. Row Level Security: turn it on for every table
--- ---------------------------------------------------------------------
 alter table public.profile             enable row level security;
 alter table public.feedback            enable row level security;
 alter table public.comment             enable row level security;
@@ -159,15 +129,8 @@ alter table public.vote                enable row level security;
 alter table public.feedback_embeddings enable row level security;
 
 
--- ---------------------------------------------------------------------
--- 7. Policies
---    Admin check used below:
---      exists (select 1 from public.profile
---              where id = auth.uid() and role = 'ADMIN')
---    Known limit: RLS controls rows, not columns. An owner can update any
---    column of their own post or comment. The server actions only send
---    the allowed fields.
--- ---------------------------------------------------------------------
+
+--  Policies
 
 -- ---- profile ----
 create policy "profile: everyone can read"
@@ -251,17 +214,6 @@ create policy "embeddings: signed-in users can read"
   using (true);
 
 
--- ---------------------------------------------------------------------
--- 8. Make yourself admin (run once, after you have signed up)
---    Find your id: Authentication -> Users, or
---    select id, full_name from public.profile;
--- ---------------------------------------------------------------------
--- update public.profile set role = 'ADMIN' where id = 'YOUR-USER-UUID';
-
-
--- ---------------------------------------------------------------------
--- 9. Checks (safe to run any time)
--- ---------------------------------------------------------------------
 
 -- RLS must be on for every table (rowsecurity = true)
 select tablename, rowsecurity from pg_tables where schemaname = 'public';
