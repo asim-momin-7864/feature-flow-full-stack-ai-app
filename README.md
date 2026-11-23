@@ -325,4 +325,4 @@ I want to be honest about what this project does not do yet:
 
 Asim Momin · Full-stack developer
 
-[Portfolio](https://vercel.com/asim-momin/my-portfolio-site) · [GitHub](https://github.com/asim-momin-7864) · [LinkedIn](http://www.linkedin.com/in/asim-momin7864) · Email: asimmomin.dev@gmail.com
+[Portfolio](https://asim-momin-7864-portfolio.vercel.app/) · [GitHub](https://github.com/asim-momin-7864) · [LinkedIn](http://www.linkedin.com/in/asim-momin7864) · Email: asimmomin.dev@gmail.com
