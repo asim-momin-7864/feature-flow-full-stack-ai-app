@@ -6,8 +6,6 @@ Feature Flow is a website where people share product ideas and bug reports. Othe
 
 ---
 
-[Deploy Live Link](https://feature-flow-full-stack-ai-app.vercel.app)
-
 [Source Code](https://github.com/asim-momin-7864/feature-flow-full-stack-ai-app)
 
 > This is a learning and portfolio project. All data is dummy data.
