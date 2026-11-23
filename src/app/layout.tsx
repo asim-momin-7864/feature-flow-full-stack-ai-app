@@ -22,7 +22,10 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Feature Flow",
+  title: {
+    default: "FeatureFlow",
+    template: "%s | FeatureFlow",
+  },
   description:
     "A product feedback and roadmap board with AI duplicate detection.",
 };

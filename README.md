@@ -1,12 +1,6 @@
 # Feature Flow
 
-[**Live demo**](TODO-add-live-demo-link) | [**Demo video**](TODO-add-demo-video-link)
-
-<!-- HOW TO EDIT THE TWO LINKS ABOVE
-1. Live demo: after you deploy, replace TODO-add-live-demo-link with your Vercel address.
-2. Demo video: replace TODO-add-demo-video-link with your LinkedIn post or YouTube link.
-Until you have a link, delete that word and the "|" next to it.
-Also change the Status line below after you deploy. -->
+[**Live demo**](https://feature-flow-full-stack-ai-app-asim-momin.vercel.app/)
 
 Feature Flow is a website where people share product ideas and bug reports. Other users can upvote and comment. The admin moves each idea across a roadmap. It also has two small AI features: it finds similar ideas, and it adds tags to new posts.
 
@@ -149,8 +143,6 @@ In short:
 5. If the AI fails, the error is ignored. The post is already saved.
 6. You go back to the home page.
 
-<!-- CHECK: the exact daily limit rule is in src/lib/ai-step.ts (AI_DAILY_POST_LIMIT = 5). Confirm if the 6th post is skipped, and fix the sentence in step 4 and in the AI table if needed. -->
-
 The most important rule: **AI is a bonus, not a requirement.** If the AI is slow or broken, posting, voting and commenting still work.
 
 ---
@@ -284,13 +276,10 @@ There is no seed script. The file [`docs/dummy-feedbacks-and-comments.txt`](docs
 
 ## Demo accounts
 
-<!-- Fill this in when the demo accounts are final. The login page also shows test accounts.
-Delete this whole section if you do not give visitors a login. -->
-
-| Role  | Email | Password |
-| ----- | ----- | -------- |
-| User  | TODO  | TODO     |
-| Admin | TODO  | TODO     |
+| Role  | Email                | Password   |
+| ----- | -------------------- | ---------- |
+| User  | user1@example.com    | user12345  |
+| Admin | admin444@example.com | admin12345 |
 
 These accounts are for the demo only. Please do not enter real personal information.
 
@@ -336,8 +325,6 @@ I want to be honest about what this project does not do yet:
 
 ## Contact
 
-Asim Momin · Full-stack developer (fresher)
+Asim Momin · Full-stack developer
 
-[GitHub](https://github.com/asim-momin-7864) · [LinkedIn](http://www.linkedin.com/in/asim-momin7864) · Email: TODO
-
-<!-- Add your email and, if you have one, your portfolio link. -->
+[Portfolio](https://vercel.com/asim-momin/my-portfolio-site) · [GitHub](https://github.com/asim-momin-7864) · [LinkedIn](http://www.linkedin.com/in/asim-momin7864) · Email: asimmomin.dev@gmail.com
