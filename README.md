@@ -10,7 +10,11 @@ Also change the Status line below after you deploy. -->
 
 Feature Flow is a website where people share product ideas and bug reports. Other users can upvote and comment. The admin moves each idea across a roadmap. It also has two small AI features: it finds similar ideas, and it adds tags to new posts.
 
-**Status:** works on my computer. Not deployed yet.
+---
+
+[Deploy Live Link](https://feature-flow-full-stack-ai-app.vercel.app)
+
+[Source Code](https://github.com/asim-momin-7864/feature-flow-full-stack-ai-app)
 
 > This is a learning and portfolio project. All data is dummy data.
 
